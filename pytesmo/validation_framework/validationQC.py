@@ -168,6 +168,8 @@ class Validation(object):
             if self.triple == 1:
                 if len(other_dataframes) == 1:
                     continue
+                if len(other_dataframes) == 2:
+                    continue
 
                 list_system = []
                 for other in other_dataframes.keys():
@@ -192,7 +194,8 @@ class Validation(object):
                 ref_col = result_names[0][0].split('.')[1]
                 other_col1 = result_names[0][1].split('.')[1]
                 other_col2 = result_names[1][1].split('.')[1]
-                joined.rename(columns={ref_col: 'ref', other_col1: 'other1',other_col2:'other2'}, inplace=True)
+                other_col3 = result_names[2][1].split('.')[1]
+                joined.rename(columns={ref_col: 'ref', other_col1: 'other1',other_col2:'other2',other_col3:'other3'}, inplace=True)
 
                 #results[('result','TC')] = []
                 #results[('result','TC')].append(self.calc_metrics(joined,gpi_meta)) # same structure useful for compact_results

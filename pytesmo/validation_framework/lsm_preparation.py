@@ -233,15 +233,12 @@ class DataPreparationTC(object):
                 other = other[other['sm']>=0]
                 # other['corr_flag'][np.isnan(other['corr_flag'])]=0
                 # other['proc_flag'][np.isnan(other['proc_flag'])]=0
-                corr_flag = np.int64(other['corr_flag'])
-                corr_flag[corr_flag<0] = 0
-                proc_flag = np.int64(other['proc_flag'])
-                proc_flag[proc_flag<0] = 0
-                bit_mask = ((get_bit(corr_flag, 3)) |
-                            (get_bit(corr_flag, 4)) |
-                            (get_bit(corr_flag, 6)) |
-                            (get_bit(proc_flag, 1)) |
-                            (get_bit(corr_flag, 2)))
+
+                bit_mask = ((get_bit(other['corr_flag'], 3)) |
+                            (get_bit(other['corr_flag'], 4)) |
+                            (get_bit(other['corr_flag'], 6)) |
+                            (get_bit(other['proc_flag'], 1)) |
+                            (get_bit(other['corr_flag'], 2)))
 
                 other = other[(other['ssf'] == 0) | (other['ssf'] == 1) &
                               (bit_mask == 0)]

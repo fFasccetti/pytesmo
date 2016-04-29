@@ -230,7 +230,6 @@ class DataPreparationTC(object):
 
         if other_name == 'ERS' or other_name == 'ASCAT':
             if mask_ssf is not None:
-                # other = other[(other['ssf']== mask_ssf[0]) | (other['ssf'] == mask_ssf[1])]
                 other = other[other['sm']>=0]
                 # other['corr_flag'][np.isnan(other['corr_flag'])]=0
                 # other['proc_flag'][np.isnan(other['proc_flag'])]=0

@@ -10,6 +10,24 @@ import pytesmo.timedate.julian as julian
 # import pytesmo.temporal_matching as temp_match
 # import pytesmo.validation_framework.temporal_matchers as temporal_matchers
 
+def get_bit(a, bit_pos):
+    """
+    Returns 1 or 0 if bit is set or not.
+
+    Parameters
+    ----------
+    a : int or numpy.ndarray
+      Input array.
+    bit_pos : int
+      Bit position. First bit position is right.
+
+    Returns
+    -------
+    b : numpy.ndarray
+      1 if bit is set and 0 if not.
+    """
+    return np.clip(np.bitwise_and(a, 2 ** (bit_pos-1)), 0, 1)
+
 class BasicMetricsQC(object):
     """
     This class just computes basic metrics for all the possible combinations and the results of the triple collocation.
@@ -345,18 +363,10 @@ class DataPreparationQC(object):
         if other_name == 'ERS' or other_name == 'ASCAT':
             if mask_ssf is not None:
                 # other = other[(other['ssf']== mask_ssf[0]) | (other['ssf'] == mask_ssf[1])]
+                # other = other[(other['ssf']== mask_ssf[0]) | (other['ssf'] == mask_ssf[1])]
+                bit_mask = ((get_bit(other['corr_flag'],3))|(get_bit(other['corr_flag'],4))|(get_bit(other['corr_flag'],6))|(get_bit(other['proc_flag'],1)|(get_bit(other['corr_flag'],2))))
+                other = other[((other['ssf'] == 0)|(other['ssf'] == 1))&(bit_mask == 0)]
                 other = other[other['sm']>=0]
-                # other['corr_flag'][np.isnan(other['corr_flag'])]=0
-                # other['proc_flag'][np.isnan(other['proc_flag'])]=0
-
-                bit_mask = ((get_bit(other['corr_flag'], 3)) |
-                            (get_bit(other['corr_flag'], 4)) |
-                            (get_bit(other['corr_flag'], 6)) |
-                            (get_bit(other['proc_flag'], 1)) |
-                            (get_bit(other['corr_flag'], 2)))
-
-                other = other[(other['ssf'] == 0) | (other['ssf'] == 1) &
-                              (bit_mask == 0)]
 
                 other = other[['sm','ssf']]
                 # Anomalies

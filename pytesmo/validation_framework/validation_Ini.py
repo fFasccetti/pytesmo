@@ -254,7 +254,7 @@ class Validation(object):
                         results[result] = []
 
                     results[result].append(self.calc_metrics(data, gpi_meta))
-            print gpi_info[0]
+            # print gpi_info[0]
         #if self.triple==1:
         #    # same structure useful for compact_results dict of list of dict
         #    results[('TC','results')] = []

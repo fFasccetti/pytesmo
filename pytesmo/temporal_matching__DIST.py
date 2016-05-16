@@ -171,10 +171,10 @@ def matching(reference, *args, **kwargs):
                         merge_key = args[era_pos_args]['merge_key'][time_era]
                         if dist_era>=0:
                             #diff_values_era = arsgs[era_pos_args]['sm_era'][merge_key] - args[era_pos_args]['sm_era'][merge_key+1]
-                            values_era = args[era_pos_args]['sm_era'][merge_key-1:merge_key+1]
+                            values_era = args[era_pos_args]['sm_era'][merge_key:merge_key+2]
                         else:
                             #diff_values_era = 2*arsgs[era_pos_args]['sm_era'][merge_key] - args[era_pos_args]['sm_era'][merge__key+1] - args[era_pos_args]['sm_era'][merge_key+2]
-                            values_era = args[era_pos_args]['sm_era'][merge_key-2:merge_key+1]
+                            values_era = args[era_pos_args]['sm_era'][merge_key:merge_key+3]
                     else:
                         merge_key = args[era_pos_args]['merge_key'][time_era]
                         if dist_era<0:

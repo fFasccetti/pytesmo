@@ -171,10 +171,10 @@ def matching(reference, *args, **kwargs):
                         merge_key = args[era_pos_args]['merge_key'][time_era]
                         if dist_era>=0:
                             #diff_values_era = arsgs[era_pos_args]['sm_era'][merge_key] - args[era_pos_args]['sm_era'][merge_key+1]
-                            values_era = args[era_pos_args]['sm_era'][merge_key-1:merge_key+1]
+                            values_era = args[era_pos_args]['sm_era'][merge_key:merge_key+2]
                         else:
                             #diff_values_era = 2*arsgs[era_pos_args]['sm_era'][merge_key] - args[era_pos_args]['sm_era'][merge__key+1] - args[era_pos_args]['sm_era'][merge_key+2]
-                            values_era = args[era_pos_args]['sm_era'][merge_key-2:merge_key+1]
+                            values_era = args[era_pos_args]['sm_era'][merge_key:merge_key+3]
                     else:
                         merge_key = args[era_pos_args]['merge_key'][time_era]
                         if dist_era<0:
@@ -186,10 +186,10 @@ def matching(reference, *args, **kwargs):
                     #if abs(diff_values_era) > 2:
                     if np.std(values_era) > 2:
                         match['sm'][pos[k]] = np.nan
-                        print values_era
+                        # print values_era
                 else:
                     match['sm'][pos[k]] = np.nan
-                    print 'ooooooo'
+                    # print 'ooooooo'
                         #values_era = [0]
         match = match.drop(['distance','index'], axis=1)
         #match = match.drop(['sm','index','ssf'], axis=1)

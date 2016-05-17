@@ -11,6 +11,20 @@ import pytesmo.time_series.anomaly as anomaly
 # import pytesmo.temporal_matching as temp_match
 # import pytesmo.validation_framework.temporal_matchers as temporal_matchers
 
+def calc_por(gpi_info):
+    import os
+    from netCDF4 import Dataset
+    import rsdata.root_path as root
+    file_por = os.path.join(root.r,'Datapool_processed','WARP','ancillary','static_layer','static_layer_porosity.nc')
+    nc_por = Dataset(file_por,'r')
+    gpi_por = nc_por['location_id'][:]
+    porGLDAS = nc_por['por_gldas'][:]
+    lut_por_name = os.path.join('/home/','ffascett','Desktop','lut_POR.nc')
+    lut_por_nc = Dataset(lut_por_name,'r')
+    lut_por = lut_por_nc['location_id'][:]
+    por = porGLDAS._data[gpi_por==lut_por[gpi_info]][0]
+    return por
+
 def get_bit(a, bit_pos):
     """
     Returns 1 or 0 if bit is set or not.
@@ -123,7 +137,7 @@ class BasicMetricsQC(object):
         dataset['lon'][0] = gpi_info[1]
         dataset['lat'][0] = gpi_info[2]
 
-
+        por = calc_por(gpi_info[0]) # gpi_info[1],gpi_info[2])
 
         for season in self.seasons:
 
@@ -136,6 +150,11 @@ class BasicMetricsQC(object):
                 continue
 
             x,y,z,w = data['ref'].values[subset], data['other1'].values[subset], data['other2'].values[subset], data['other3'].values[subset]
+
+            if por==-1:
+                continue
+            else:
+                w = w*por
 
             R_xy, p_R_xy = metrics.pearsonr(x, y)
             rho_xy, p_rho_xy = metrics.spearmanr(x, y)

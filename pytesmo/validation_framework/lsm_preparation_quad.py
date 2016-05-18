@@ -410,9 +410,11 @@ class DataPreparationQC(object):
 
             jday = other['jd'] - julian.julday(01,01,1900)
             jday = netCDF4.num2date(jday, 'days since 1900-01-01 00:00:00')
-            other = pd.DataFrame({'smc': other['smc'],'smx':other['smx']}, index=jday)
+            other = pd.DataFrame({'smc': other['smc'],'smx':other['smx'], 'dir':other['dir']}, index=jday)
+            other = other[other['dir']==68]
             other = other[other['smc']>=0]
             other = other[other['smc']<=70]
+            other = other[['smc']]
             # Anomalies
             # other['smc'] = anomaly.calc_anomaly(other['smc'],window_size=35)
         return other

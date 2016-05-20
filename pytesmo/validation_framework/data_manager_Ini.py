@@ -192,6 +192,10 @@ class DataManager(object):
             else:
                 raise e
 
+        if ref_df is None:
+            warnings.warn("No data for reference {:}".format(args))
+            return None
+
         if len(ref_df) == 0:
             warnings.warn("No data for reference {:}".format(args))
             return None
@@ -254,6 +258,10 @@ class DataManager(object):
                 return None
             else:
                 raise e
+
+        if other_df is None:
+            warnings.warn("No data for other dataset".format(args))
+            return None
 
         if len(other_df) == 0:
             warnings.warn("No data for other dataset".format(args))

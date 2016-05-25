@@ -210,9 +210,12 @@ class DataManager(object):
         if isinstance(ref_df, pd.DataFrame) == False:
             #warnings.warn("Data is not a DataFrame {:}".format(args))
             return None
-
-        if self.period is not None:
-            ref_df = ref_df[self.period[0]:self.period[1]]
+            
+            if self.period is not None:
+                try:
+                    ref_df = ref_df[self.period[0]:self.period[1]]
+                except KeyError:
+                    return None
 
         if len(ref_df) == 0:
             #warnings.warn("No data for reference {:}".format(args))
@@ -278,8 +281,11 @@ class DataManager(object):
             #warnings.warn("Data is not a DataFrame {:}".format(args))
             return None
 
-        if self.period is not None:
-            other_df = other_df[self.period[0]:self.period[1]]
+            if self.period is not None:
+                try:
+                    other_df = other_df[self.period[0]:self.period[1]]
+                except KeyError:
+                    return None
 
         if len(other_df) == 0:
             #warnings.warn("No data for other dataset {:}".format(args))

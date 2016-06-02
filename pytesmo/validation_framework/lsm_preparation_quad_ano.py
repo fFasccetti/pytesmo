@@ -1,3 +1,4 @@
+import os
 import copy
 import numpy as np
 import pytesmo.metrics as metrics
@@ -7,23 +8,25 @@ import pandas as pd
 import pytesmo.timedate.julian as julian
 import pytesmo.time_series.anomaly as anomaly
 
+import rsdata.root_path as root
+
 
 # import pytesmo.temporal_matching as temp_match
 # import pytesmo.validation_framework.temporal_matchers as temporal_matchers
 
-def calc_por(gpi_info):
-    import os
-    from netCDF4 import Dataset
-    import rsdata.root_path as root
-    file_por = os.path.join(root.r,'Datapool_processed','WARP','ancillary','static_layer','static_layer_porosity.nc')
-    nc_por = Dataset(file_por,'r')
-    gpi_por = nc_por['location_id'][:]
-    porGLDAS = nc_por['por_gldas'][:]
-    lut_por_name = os.path.join('/home/','ffascett','Desktop','lut_POR.nc')
-    lut_por_nc = Dataset(lut_por_name,'r')
-    lut_por = lut_por_nc['location_id'][:]
-    por = porGLDAS._data[gpi_por==lut_por[gpi_info]][0]
-    return por
+# def calc_por(gpi_info):
+#     import os
+#     from netCDF4 import Dataset
+#     import rsdata.root_path as root
+#     file_por = os.path.join(root.r,'Datapool_processed','WARP','ancillary','static_layer','static_layer_porosity.nc')
+#     nc_por = Dataset(file_por,'r')
+#     gpi_por = nc_por['location_id'][:]
+#     porGLDAS = nc_por['por_gldas'][:]
+#     lut_por_name = os.path.join('/home/','ffascett','Desktop','lut_POR.nc')
+#     lut_por_nc = Dataset(lut_por_name,'r')
+#     lut_por = lut_por_nc['location_id'][:]
+#     por = porGLDAS._data[gpi_por==lut_por[gpi_info]][0]
+#     return por
 
 def get_bit(a, bit_pos):
     """
@@ -119,6 +122,22 @@ class BasicMetricsQC(object):
 
         self.month_to_season = np.array(['','DJF','DJF','MAM','MAM','MAM','JJA','JJA','JJA','SON','SON','SON','DJF'])
 
+        # load porosity infromation
+        file_por = os.path.join(root.r,'Datapool_processed','WARP',
+                                'ancillary','static_layer',
+                                'static_layer_porosity.nc')
+        with netCDF4.Dataset(file_por,'r') as nc_por:
+            self.gpi_por = nc_por['location_id'][:]
+            self.porGLDAS = nc_por['por_gldas'][:]
+        lut_por_name = '/data-write/RADAR/Validation_FFascetti/lut_POR.nc'
+        with netCDF4.Dataset(lut_por_name, 'r') as lut_por_nc:
+            self.lut_por = lut_por_nc['location_id'][:]
+ 
+        
+    def calc_por(self, gpi_info):
+        por = self.porGLDAS._data[self.gpi_por==self.lut_por[gpi_info]][0]
+        return por
+
 
     def calc_metrics(self,data,gpi_info):
 
@@ -137,7 +156,7 @@ class BasicMetricsQC(object):
         dataset['lon'][0] = gpi_info[1]
         dataset['lat'][0] = gpi_info[2]
 
-        por = calc_por(gpi_info[0]) # gpi_info[1],gpi_info[2])
+        por = self.calc_por(gpi_info[0])
 
         for season in self.seasons:
 
